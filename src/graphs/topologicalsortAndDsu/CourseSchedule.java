@@ -49,15 +49,19 @@ public class CourseSchedule {
 		for (int i = 0; i < numCourses; i++) {
 			adj.add(new ArrayList<Integer>());
 		}
-		
+		int m = prerequisites.length;
+		for(int i=0;i<m;i++){
+			adj.get(prerequisites[i][0]).add(prerequisites[i][1]);
+		}
        //1. Find indegree of all the nodes
-		for (int[] prerequisite : prerequisites) {
-			adj.get(prerequisite[1]).add(prerequisite[0]); // add edge to adjacency list
-			++indegree[prerequisite[0]]; // increment indegree of the node
+		for(int i=0;i<numCourses;i++){
+			for(int node: adj.get(i))
+				indegree[node]++;
 		}
 		
-		Queue<Integer> queue = new LinkedList<>();
+
 		//2. insert all the indegree of 0 to queue
+		Queue<Integer> queue = new LinkedList<>();
 		for (int i = 0; i < numCourses; i++) {
 			if (indegree[i] == 0) {
 				queue.add(i);
@@ -65,18 +69,20 @@ public class CourseSchedule {
 		}
 		//3.Remove an element from queue & update the indegree of all of it's neighbours(decrement indegree)
 		int count = 0;
+		List<Integer> topo = new ArrayList<>();
 		while (!queue.isEmpty()) {
-			int course = queue.poll();
+			int temp = queue.poll();
 			count++;
 
-			for (Integer nbr : adj.get(course)) {
-				if (--indegree[nbr] == 0) {
+			for (Integer nbr : adj.get(temp)) {
+				if (indegree[nbr] == 0) {
 					queue.add(nbr);
 				}
 			}
 		}
-
-		return count == numCourses;
+        if(topo.size() == numCourses)
+			return true;
+		return false;
 
 	}
 
