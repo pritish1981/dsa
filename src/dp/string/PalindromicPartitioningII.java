@@ -63,9 +63,8 @@ public class PalindromicPartitioningII {
 	}
 
 	public static void main(String[] args) {
-		String s = "babc";
+		String s = "abac";
 		System.out.println("Minimum cut needed for palindromic partition is :: " +palindromicPartition(s));
-
 	}
 
 }

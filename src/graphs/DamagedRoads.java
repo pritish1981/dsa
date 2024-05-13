@@ -4,6 +4,7 @@
 package graphs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -82,59 +83,48 @@ Explanation 2:
  */
 public class DamagedRoads {
 
+	static class Pair  {
+		int cost;
+		int direction;
+
+		Pair(int c, int d) {
+			this.cost = c;
+			this.direction = d;
+		}
+	}
+
 	public static int solve(int[] A, int[] B) {
 		int n = A.length;
 		int m = B.length;
 		int mod = 1000000007;
 		long ans = 0;
-
-		ArrayList<Pair> v = new ArrayList<>();
-
+		Pair[] arr = new Pair[n+m];
 		for (int i = 0; i < n; i++) {
-			v.add(new Pair(A[i], 1));
+			arr[i] = new Pair(A[i], 1);
 		}
 		for (int i = 0; i < m; i++) {
-			v.add(new Pair(B[i], 0));
+			arr[i+n] = new Pair(B[i], 0);
 		}
-		Collections.sort(v);
-		n++;
-		m++;
-
-		for (Pair u : v) {
-			if (u.second == 0) {
-				ans = (ans + (m * u.first) % mod) % mod;
-				ans %= mod;
-				n--;
-			} else {
-				ans = (ans + (n * u.first) % mod) % mod;
-				ans %= mod;
+		Arrays.sort(arr,(a, b) -> a.cost-b.cost);
+		for(Pair pair: arr){
+			int cost = pair.cost;
+			boolean isHorizontal = pair.direction == 0;
+			if(isHorizontal){
+				ans+=(long)cost *(n+1);
+				ans%=mod;
 				m--;
+			}else{
+				ans+=(long)cost *(m+1);
+				ans%=mod;
+				n--;
 			}
 		}
 		return (int) ans;
 
 	}
-
-	static class Pair implements Comparable<Pair> {
-		int first;
-		int second;
-
-		Pair(int a, int b) {
-			this.first = a;
-			this.second = b;
-		}
-
-		@Override
-		public int compareTo(Pair o) {
-			if (this.first == o.first)
-				return this.first - o.first;
-			return this.first - o.first;
-		}
-	}
-
 	public static void main(String[] args) {
-		int[] A = { 1, 1, 1 };
-		int[] B = { 1, 1, 2 };
+		int[] A = { 1, 2, 3 };
+		int[] B = { 4, 5, 6 };
 		System.out.println(solve(A, B));
 	}
 
