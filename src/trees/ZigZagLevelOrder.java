@@ -13,23 +13,27 @@ public class ZigZagLevelOrder {
 	static Node root;
    //using queue
 	static List<List<Integer>> zigzagLevelOrder(Node root){
-		if(root == null) return new ArrayList<>();
 		List<List<Integer>> result = new ArrayList<>();
+		if(root == null) return result;
 		Queue<Node> q = new LinkedList<>();
 		q.add(root);
-		boolean reverseLevel = false;
+		boolean zigzag = false;
 		while(!q.isEmpty()) {
-			int size = q.size();
+			int levelSize = q.size();
 			List<Integer> level = new ArrayList<>();
-			while(size-- > 0) {
-				root = q.poll();
-				level.add(root.data);
-				if(root.left != null) q.add(root.left);
-				if(root.right != null) q.add(root.right);
+			for(int i=0;i<levelSize;i++){
+				Node node = q.poll();
+				if(zigzag){
+					level.add(0,node.data );// Add to the beginning of the list for zigzag
+				}
+				else{
+					level.add(node.data);// Add to the end of the list for regular order
+				}
+				if(node.left != null) q.add(node.left);
+				if(node.right != null) q.add(node.right);
 			}
-			if(reverseLevel) Collections.reverse(level);
 			result.add(level);
-			reverseLevel = !reverseLevel;
+			zigzag = !zigzag;
 		}
 		return result;
 	}
