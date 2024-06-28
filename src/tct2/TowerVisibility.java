@@ -1,4 +1,7 @@
 package tct2;
+
+import java.util.Stack;
+
 /*
 There are N towers. They are given in the form of array A, where Ai represents the height of the ith tower.
 Bowser will stand on the one of the towers and try to see the maximum possible number of towers from the position.
@@ -16,29 +19,19 @@ Problem Constraints:
 public class TowerVisibility {
     public static int closestPositionWithMaxVisibility(int[] heights) {
         int n = heights.length;
-        int maxVisibleTowers = 0;
-        int closestPosition = 0;
-
-        for (int i = 0; i < n; i++) {
-            int visibleTowers = 0;
-            int currentHeight = heights[i];
-
-            // Count visible towers to the right of the current tower
-            for (int j = i + 1; j < n; j++) {
-                if (heights[j] > currentHeight) {
-                    visibleTowers++;
-                    currentHeight = heights[j];
-                }
+        Stack<Integer> st = new Stack<Integer>();
+        int ans = 1, max = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            while (!st.isEmpty() && heights[st.peek()] < heights[i]) {
+                st.pop();
             }
-
-            // Update the closest position with the maximum number of visible towers
-            if (visibleTowers > maxVisibleTowers) {
-                maxVisibleTowers = visibleTowers;
-                closestPosition = i;
+            if (st.size() >= max) {
+                max = st.size();
+                ans = i + 1;
             }
+            st.add(i);
         }
-
-        return closestPosition + 1; // Convert 0-based index to 1-based position
+        return ans;
     }
 
     public static void main(String[] args) {
@@ -46,7 +39,5 @@ public class TowerVisibility {
         int position = closestPositionWithMaxVisibility(heights);
         System.out.println("Closest position with maximum visibility: " + position);
     }
-
-
 
 }
