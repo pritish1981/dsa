@@ -41,7 +41,7 @@ public class NoOfIslands {
 		return count;
 	}
 
-	public static void dfs(int i, int j, int n, int m, boolean visited[][], int[][] A) {
+	public static void dfs(int i, int j, int n, int m, boolean[][] visited, int[][] A) {
 		visited[i][j] = true;
 		int[] dx = new int[] { 0, 1, -1, 0 };
 		int[] dy = new int[] { 1, 0, 0, -1 };
@@ -62,6 +62,5 @@ public class NoOfIslands {
 		System.out.println("Numbers of islands :: " + solve(grid));
 
 	}
-
 
 }
