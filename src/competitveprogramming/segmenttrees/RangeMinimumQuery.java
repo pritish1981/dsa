@@ -75,38 +75,19 @@ Output 2:
 public class RangeMinimumQuery {
     static int maxn = 400009;
     static int[] seg = new int[maxn];
-    public int[] solve(int[] A, int[][] B) {
-        Arrays.fill(seg, 0);
-        int n = A.length;
-        int m = B.length;
-        build(1, 0, n - 1, A);
-        ArrayList < Integer > ans = new ArrayList < > ();
-        for (int i = 0; i < m; i++) {
-            int x = B[i][0];
-            int y = B[i][1];
-            int z = B[i][2];
-            if (x == 1)
-                ans.add(query(1, 0, A.length - 1, y - 1, z - 1));
-            else
-                update(1, 0, A.length - 1, y - 1, z);
-        }
-        int[] res = new int[ans.size()];
-        for (int i = 0; i < ans.size(); i++)
-            res[i] = ans.get(i);
-        return res;
-    }
+
     public static void update(int node, int start, int end, int idx, int val) {
-        if (start == end) {
+        if (start == end) { //leaf nodes
             seg[node] = val;
             return;
         }
         int mid = (start + end) / 2;
         if (idx <= mid) {
-            update(2 * node, start, mid, idx, val);
+            update(2 * node+1, start, mid, idx, val);
         } else {
-            update(2 * node + 1, mid + 1, end, idx, val);
+            update(2 * node+2, mid + 1, end, idx, val);
         }
-        seg[node] = Math.min(seg[2 * node], seg[2 * node + 1]);
+        seg[node] = Math.min(seg[2 * node+1], seg[2 * node + 2]);
     }
     public static void build(int node, int start, int end, int[] A) {
         if (start == end) {
@@ -114,9 +95,9 @@ public class RangeMinimumQuery {
             return;
         }
         int mid = (start + end) / 2;
-        build(2 * node, start, mid, A);
-        build(2 * node + 1, mid + 1, end, A);
-        seg[node] = Math.min(seg[2 * node], seg[2 * node + 1]);
+        build(2 * node+1, start, mid, A);
+        build(2 * node+2, mid + 1, end, A);
+        seg[node] = Math.min(seg[2 * node+1], seg[2 * node + 2]);
     }
     public static int query(int node, int start, int end, int l, int r) {
         if (r < start || end < l) {
@@ -126,9 +107,29 @@ public class RangeMinimumQuery {
             return seg[node];
         }
         int mid = (start + end) / 2;
-        int left = query(2 * node, start, mid, l, r);
-        int right = query(2 * node + 1, mid + 1, end, l, r);
+        int left = query(2 * node+1, start, mid, l, r);
+        int right = query(2 * node+2, mid + 1, end, l, r);
         return Math.min(left, right);
+    }
+    public int[] solve(int[] A, int[][] B) {
+        Arrays.fill(seg, 0);
+        int n = A.length;
+        int m = B.length;
+        build(1, 0, n - 1, A);
+        ArrayList < Integer > ans = new ArrayList < > ();
+        for (int[] ints : B) {
+            int x = ints[0];
+            int y = ints[1];
+            int z = ints[2];
+            if (x == 1)
+                ans.add(query(1, 0, A.length - 1, y - 1, z - 1));
+            else
+                update(1, 0, A.length - 1, y - 1, z);
+        }
+        int[] res = new int[ans.size()];
+        for (int i = 0; i < ans.size(); i++)
+            res[i] = ans.get(i);
+        return res;
     }
     public static void main(String[] args) {
         RangeMinimumQuery rmq = new RangeMinimumQuery();
